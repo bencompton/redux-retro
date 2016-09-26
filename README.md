@@ -95,7 +95,8 @@ export class CalculatorActions extends Actions {
 
 export calculatorActions = new CalculatorActions(store);
 
-//Calling an action method dispatches that action through the Redux store for you. For example, the following code dispatches this action behind the scenes:
+//Calling an action method dispatches that action through the Redux store for you. 
+//For example, the following code dispatches this action behind the scenes:
 //
 //{
 //	type: 'ADD',
