@@ -19,7 +19,7 @@ While libraries like Redux Saga and Redux Loop are cool, at this time, the dust 
 
 In addition, support for TypeScript with vanilla Redux is lacking, and another goal of Redux Retro is improved TypeScript support.
 
-## Pre-requisites
+## Prerequisites
 
 If you haven’t already read through the excellent [Redux documentation](http://) and gained a full understanding of how it works, it is highly recommended that you do so before exploring Redux Retro. If you fully understand Redux and like it just fine the way it is, then you can stop reading and just ignore Redux Retro. If you have never used any Flux libraries before using Redux, you might consider reading the docs of some of the classic libraries and doing some additional research on how they differ from Redux. [This Github example](https://github.com/ethan-deng/Redux-vs-Alt), for instance, does a great job of comparing and contrasting Alt and Redux.
 
