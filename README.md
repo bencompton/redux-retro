@@ -162,7 +162,7 @@ calculatorReducer(0, {
 
 ### Improved TypeScript Support
 
-```javascript
+```typescript
 interface ITodo {
 	id: number;
 	text: string;
