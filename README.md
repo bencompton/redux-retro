@@ -25,9 +25,11 @@ If you haven’t already read through the excellent [Redux documentation](http:/
 
 ## Examples
 
-### Actions in Vanilla Redux
+### Actions
 
 Many people object to using action type strings and constants, arguing that they violate the [DRY principle](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself) in that the knowledge of an action name is duplicated: the action creator function has the action name, the action type string repeats the action name, and when using constant variables, the action name is repeated yet a third time. Also, many people like action functions that automatically dispatch. Redux Retro addresses both of these concerns. For example:
+
+#### Actions in Vanilla Redux
 
 ```javascript
 import {store} from 'Store';
@@ -68,9 +70,9 @@ export const divide = (value) => {
 store.dispatch(add(5));
 ```
 
-### Actions in Redux Retro
+#### Actions in Redux Retro
 
-Libraries like Alt and Flummox automatically generate the action type string from the action method name, and automatically dispatch actions through the dispatcher, and Redux Retro brings this back.
+Libraries like Alt and Flummox automatically generate the action type string from the action method name, and automatically dispatch actions through the dispatcher. Redux Retro brings this back.
 
 ```javascript
 import {store} from 'Store';
@@ -105,10 +107,11 @@ export calculatorActions = new CalculatorActions(store);
 
 calculatorActions.add(5);
 ```
-
-### Reducer in Vanilla Redux
+### Reducers
 
 Many people dislike switch statements in reducers, and while [Redux Actions](https://github.com/acdlite/redux-actions), for example, eliminates the need for switch statements, it does not eliminate action type strings / constants.
+
+#### Reducer in Vanilla Redux
 
 ```javascript
 import {ADD, SUBTRACT, MULTIPLY, DIVIDE} from 'CalculatorActions';
@@ -129,7 +132,7 @@ const calculatorReducer = (state = 0, action) => {
 };
 ```
 
-### Reducer in Redux Retro
+#### Reducer in Redux Retro
 
 Redux Retro introduces new reducer syntax that is free of switch statements and action type strings / constants. It creates a single reducer function that can be bound to actions like so:
 
