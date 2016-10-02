@@ -32,7 +32,7 @@ gulp.task('clean-ts', function (callback) {
 
 gulp.task('test', function () {
 	return gulp.src('dist/specs/**/*.spec.js', {read: false})
-		.pipe(mocha({reporter: 'spec', timeout: '360000'})).once('error', () => {
+		.pipe(mocha({ reporter: 'spec', timeout: '360000' })).once('error', () => {
             process.exit(1);
         });
 });
