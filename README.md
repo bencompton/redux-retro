@@ -1,7 +1,7 @@
 redux-retro
 ======
 
-Bring back the clean, minimal-boilerplate syntax you enjoyed with classic Flux libraries like [Alt](http://alt.js.org), [Reflux](http://github.com/reflux/refluxjs), and [Flummox](http://acdlite.github.io/flummox), along with better TypeScript support.
+A [Redux](http://redux.js.org) add-on that brings back the clean, minimal-boilerplate syntax you enjoyed with classic Flux libraries like Alt, Reflux, and Flummox, along with better TypeScript support
 
 ## Motivation
 

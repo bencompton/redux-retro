@@ -1,12 +1,14 @@
-﻿export interface IAction<TPayload> {
+﻿import {Store} from 'redux';
+
+export interface IAction<TPayload> {
     type: any;
     payload?: TPayload;
 }
 
 export abstract class Actions<TAppState> {
-    private store: Redux.Store<TAppState>;
+    private store: Store<TAppState>;
 
-    constructor(store: Redux.Store<TAppState>) {
+    constructor(store: Store<TAppState>) {
         this.store = store;
         this.reconfigureActions();
     }

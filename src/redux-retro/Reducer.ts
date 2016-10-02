@@ -1,29 +1,25 @@
 ﻿import {IAction} from './Actions';
 
-interface IReducer<TState, TActionPayload> {
+export interface IReducer<TState, TActionPayload> {
     (state: TState, action: IAction<TActionPayload>): TState;
     bindAction?: <TNextActionPayload>(action: (...args: Object[]) => TNextActionPayload, reducer: IReducer<TState, TNextActionPayload>) => IReducer<TState, any>;
 }
 
-interface IActionBinder {
-    
-}
-
-interface IPayloadCreator<TPayload> {
+export interface IPayloadCreator<TPayload> {
     (...args: Object[]): TPayload;
     actionType?: string;
 }
 
-interface IBoundAction<TActionPayload, TState> {
+export interface IBoundAction<TActionPayload, TState> {
     payloadCreatorMethod: IPayloadCreator<TActionPayload>;
     reducerFunction: IReducer<TState, TActionPayload>;
 }
 
-interface IReducerWrapper<TState> {
+export interface IReducerWrapper<TState> {
     reducer: IReducer<TState, any>;
 }
 
-const reducer = {
+export const reducer = {
     generateActionBinder<TState>(boundActions: IBoundAction<any, TState>[], mainReducer: IReducer<TState, any>) {
         return {
             bindAction<TNextActionPayload>(action: IPayloadCreator<TNextActionPayload>, actionReducer: IReducer<TState, TNextActionPayload>): IReducer<TState, TNextActionPayload> {
