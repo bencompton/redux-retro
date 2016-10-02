@@ -5,9 +5,9 @@ A [Redux](http://redux.js.org) add-on that brings back the clean, minimal-boiler
 
 ## Motivation
 
-[Redux](http://redux.js.org) is an exceptional library that improves on Flux in a number of ways, propelling the state of the art in UI development forward. However, there are a few areas where people accustomed to various Flux libraries may find room for improvement:
+[Redux](http://redux.js.org) is an exceptional library that improves on Flux in a number of ways, propelling the state of the art in UI development forward. However, there are a number of ways that various Flux libraries improved the experiance over vanilla Flux, and Redux Retro aims to bring these improvements back to Redux.
 
-#### Reduced Action Boilerplate
+#### Reduced Boilerplate
 
 Many people preferred the boilerplate reduction that Flux libraries such as Alt, Reflux, and Flummox offered over vanilla Flux and much of the same syntactic sugar is also applicable to Redux. Redux retro aims to bring back this classic syntax.
 
@@ -17,17 +17,19 @@ While libraries like Redux Saga and Redux Loop are cool, at this time, the dust 
 
 #### Improved TypeScript Support
 
-In addition, support for TypeScript with vanilla Redux is lacking, and another goal of Redux Retro is improved TypeScript support.
+Support for TypeScript with vanilla Redux is lacking, and another goal of Redux Retro is improved TypeScript support.
 
-## Pre-requisites
+## Prerequisites
 
 If you haven’t already read through the excellent [Redux documentation](http://) and gained a full understanding of how it works, it is highly recommended that you do so before exploring Redux Retro. If you fully understand Redux and like it just fine the way it is, then you can stop reading and just ignore Redux Retro. If you have never used any Flux libraries before using Redux, you might consider reading the docs of some of the classic libraries and doing some additional research on how they differ from Redux. [This Github example](https://github.com/ethan-deng/Redux-vs-Alt), for instance, does a great job of comparing and contrasting Alt and Redux.
 
 ## Examples
 
-### Actions in Vanilla Redux
+### Actions
 
-Many people object to using action type strings and constants, arguing that they violate the [DRY principle](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself) in that the knowledge of an action name is duplicated: the action creator function has the action name, the action type string repeats the action name, and when using constant variables, the action name is repeated yet a third time. For example:
+Many people object to using action type strings and constants, arguing that they violate the [DRY principle](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself) in that the knowledge of an action name is duplicated: the action creator function has the action name, the action type string repeats the action name, and when using constant variables, the action name is repeated yet a third time. Also, many people like action functions that automatically dispatch. Redux Retro addresses both of these concerns. For example:
+
+#### Actions in Vanilla Redux
 
 ```javascript
 import {store} from 'Store';
@@ -68,9 +70,9 @@ export const divide = (value) => {
 store.dispatch(add(5));
 ```
 
-### Actions in Redux Retro
+#### Actions in Redux Retro
 
-Libraries like Alt and Flummox addressed this by automatically generating the action type string from the action method name, and Redux Retro brings this back.
+Libraries like Alt and Flummox automatically generate the action type string from the action method name, and automatically dispatch actions through the dispatcher. Redux Retro brings this back.
 
 ```javascript
 import {store} from 'Store';
@@ -95,7 +97,8 @@ export class CalculatorActions extends Actions {
 
 export calculatorActions = new CalculatorActions(store);
 
-//Calling an action method dispatches that action through the Redux store for you. For example, the following code dispatches this action behind the scenes:
+//Calling an action method dispatches that action through the Redux store for you. 
+//For example, the following code dispatches this action behind the scenes:
 //
 //{
 //	type: 'ADD',
@@ -104,8 +107,11 @@ export calculatorActions = new CalculatorActions(store);
 
 calculatorActions.add(5);
 ```
+### Reducers
 
-### Reducer in Vanilla Redux
+Many people dislike switch statements in reducers, and while [Redux Actions](https://github.com/acdlite/redux-actions), for example, eliminates the need for switch statements, it does not eliminate action type strings / constants.
+
+#### Reducer in Vanilla Redux
 
 ```javascript
 import {ADD, SUBTRACT, MULTIPLY, DIVIDE} from 'CalculatorActions';
@@ -126,9 +132,9 @@ const calculatorReducer = (state = 0, action) => {
 };
 ```
 
-### Reducer in Redux Retro
+#### Reducer in Redux Retro
 
-Many people dislike switch statements in reducers, and while [Redux Actions](https://github.com/acdlite/redux-actions), for example, eliminates the need for switch statements, it does not eliminate action type strings / constants.
+Redux Retro introduces new reducer syntax that is free of switch statements and action type strings / constants. It creates a single reducer function that can be bound to actions like so:
 
 ```javascript
 import {CalculatorActions} from 'CalculatorActions'
@@ -148,12 +154,12 @@ const calculatorReducer = createReducer(0)
     });
 ```
 
-Note that the generated reducer function is just a plain function that is equivalent in its inputs and outputs to the  reducer function above created with vanilla Redux, and is therefore fully compatible with the rest of the Redux ecosystem. For example, this reducer function can be called like so:
+Note that the generated reducer function is just a plain function that is equivalent in its inputs and outputs to the  reducer function above created with vanilla Redux, and is therefore fully compatible with the rest of the Redux ecosystem. For example, this reducer function can be called like so if the need ever arises:
 
 ```javascript
 calculatorReducer(0, {
 	type: 'ADD',
-    payload: 5
+	payload: 5
 });
 
 //New state is 5
@@ -161,7 +167,7 @@ calculatorReducer(0, {
 
 ### Improved TypeScript Support
 
-```javascript
+```typescript
 interface ITodo {
 	id: number;
 	text: string;
