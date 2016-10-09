@@ -2,13 +2,18 @@ var gulp = require('gulp'),
     tsc = require('gulp-typescript'),
     sourcemaps = require('gulp-sourcemaps'),
     tsProject = tsc.createProject('tsconfig.json'),
-    mocha = require('mocha'),
+    jasmine = require('gulp-jasmine');
     path = require('path');
 
 var merge = require('merge2'),
     del = require('del');
 
-gulp.task('compile-ts', function () {
+gulp.task('clean-ts', function (callback) {
+  var typeScriptGenFiles = ['./dist/**/*.*'];
+  return del(typeScriptGenFiles, callback);
+});    
+
+gulp.task('compile-ts', ['clean-ts'], function () {
     var tsResult = tsProject.src()
     .pipe(sourcemaps.init())
     .pipe(tsc(tsProject));
@@ -25,16 +30,9 @@ gulp.task('compile-ts', function () {
     ]);
 });
 
-gulp.task('clean-ts', function (callback) {
-  var typeScriptGenFiles = ['./dist/**/*.*'];
-  return del(typeScriptGenFiles, callback);
-});
-
-gulp.task('test', function () {
-	return gulp.src('dist/specs/**/*.spec.js', {read: false})
-		.pipe(mocha({ reporter: 'spec', timeout: '360000' })).once('error', () => {
-            process.exit(1);
-        });
+gulp.task('test', ['compile-ts'], function () {
+	return gulp.src('./dist/specs/**/*.specs.js')
+        .pipe(jasmine());
 });
 
 gulp.task('default', ['clean-ts', 'compile-ts', 'test']);

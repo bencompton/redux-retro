@@ -1,5 +1,3 @@
-import {expect} from 'chai';
-
 import {createReducer, IReducer} from '../../src/redux-retro/Reducer';
 import {Actions} from '../../src/redux-retro/Actions';
 
@@ -8,16 +6,19 @@ describe('Reducers', () => {
     let initialState = 'initial state';
 
     class TestActions extends Actions<string> {
-        A() {
+        a() {
             return 'A';
         }
 
-        B() {
+        b() {
             return 'B';
         }
     }
 
+    let testActions: TestActions;
+
     beforeEach(() => {
+        testActions = new TestActions(null);
         reducer = createReducer<string>(initialState);
     });
 
@@ -26,14 +27,14 @@ describe('Reducers', () => {
             let newState: string;
 
             beforeEach(() => {
-                reducer(null, {
+                newState = reducer(null, {
                     type: '@test',
                     payload: null
                 })
             });
 
             it('should return the reducer\'s initial state', () => {
-                expect(newState).to.equal(initialState);
+                expect(newState).toBe(initialState);
             });
         });
     });
@@ -44,7 +45,7 @@ describe('Reducers', () => {
             let newState: string; 
 
             beforeEach(() => {
-                reducer.bindAction(TestActions.prototype.A, (state, action) => {
+                reducer.bindAction(TestActions.prototype.a, (state, action) => {
                     return expectedState;
                 });
 
@@ -55,38 +56,39 @@ describe('Reducers', () => {
             });
 
             it('should return the state that the bound function returns', () => {
-                expect(newState).to.equal(expectedState);
+                expect(newState).toBe(expectedState);
             });
         });
 
         describe('When the reducer is called with an action type not bound to it', () => {
-            let expectedState = 'state that the bound action returns';
+            let otherActionState = 'other action state';
+            let passedInState = 'passedInState';
             let newState: string; 
 
             beforeEach(() => {
-                reducer.bindAction(TestActions.prototype.A, (state, action) => {
-                    return expectedState;
-                });
+                reducer.bindAction(TestActions.prototype.a, (state, action) => {
+                        return otherActionState;
+                    });
 
-                newState = reducer(initialState, {
+                newState = reducer(passedInState, {
                     type: 'B',
                     payload: null
                 });
             });
             
-            xit('should return the state passed to it', () => {
-                expect(newState).to.equal(initialState);
+            it('should return the state passed to it', () => {
+                expect(newState).toBe(passedInState);
             });
-        })
+        });
 
         describe('When a reducer is bound to action types A and B, and action type A is dispatched', () => {
-            let reducerFunctionForActionA = sinon.spy();
-            let reducerFunctionForActionB = sinon.spy();
+            let reducerFunctionForActionA = jasmine.createSpy('reducerFunctionForActionA');
+            let reducerFunctionForActionB = jasmine.createSpy('reducerFunctionForActionB');
 
             beforeEach(() => {
                 reducer
-                    .bindAction(TestActions.prototype.A, reducerFunctionForActionA)
-                    .bindAction(TestActions.prototype.B, reducerFunctionForActionB);
+                    .bindAction(TestActions.prototype.a, reducerFunctionForActionA)
+                    .bindAction(TestActions.prototype.b, reducerFunctionForActionB);
 
                 reducer(initialState, {
                     type: 'A',
@@ -95,11 +97,11 @@ describe('Reducers', () => {
             });            
 
             it('should call the bound reducer function for action A', () => {
-                expect(reducerFunctionForActionA.called).to.equal(true);
+                expect(reducerFunctionForActionA).toHaveBeenCalled();
             });
 
             it('should NOT call the bound reducer function for action B', () => {
-                expect(reducerFunctionForActionB.called).to.equal(false);
+                expect(reducerFunctionForActionB).not.toHaveBeenCalled();
             });
         });
     });

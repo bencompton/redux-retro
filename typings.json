@@ -1,10 +1,7 @@
 {
   "name": "redux-retro",
-  "dependencies": {
-    "chai": "registry:npm/chai#3.5.0+20160723033700"
-  },
   "globalDependencies": {
-    "mocha": "registry:dt/mocha#2.2.5+20160720003353",
-    "sinon": "registry:dt/sinon#1.16.0+20160924120326"
+    "bluebird": "registry:dt/bluebird#3.0.0+20160928162057",
+    "jasmine": "registry:dt/jasmine#2.5.0+20161003201800"
   }
 }

@@ -140,16 +140,16 @@ Redux Retro introduces new reducer syntax that is free of switch statements and 
 import {CalculatorActions} from 'CalculatorActions'
 
 const calculatorReducer = createReducer(0)
-    .bindAction(calculatorActions.prototype.add, (state, action) => {
+    .bindAction(CalculatorActions.prototype.add, (state, action) => {
         return state + action.payload;
     })
-    .bindAction(calculatorActions.prototype.subtract, (state, action) => {
+    .bindAction(CalculatorActions.prototype.subtract, (state, action) => {
         return state - action.payload;
     })
-    .bindAction(calculatorActions.prototype.multiply, (state, action) => {
+    .bindAction(CalculatorActions.prototype.multiply, (state, action) => {
         return state * action.payload;
     })
-    .bindAction(calculatorActions.prototype.divide, (state, action) => {
+    .bindAction(CalculatorActions.prototype.divide, (state, action) => {
         return state / action.payload;
     });
 ```

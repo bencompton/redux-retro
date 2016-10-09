@@ -28,17 +28,16 @@
   },
   "homepage": "https://github.com/bencompton/redux-retro#readme",
   "devDependencies": {
-    "chai": "3.5.0",
     "del": "2.2.2",
     "gulp": "3.9.1",
-    "gulp-mocha": "^3.0.1",    
+    "gulp-jasmine": "2.4.2",
     "gulp-sourcemaps": "1.6.0",
     "gulp-typescript": "2.13.6",
     "merge2": "1.0.2",
-    "sinon": "1.17.6",
     "typescript": "1.8.10"
   },
   "dependencies": {
+    "bluebird": "^3.4.6",
     "redux": "3.6.0"
   }
 }
