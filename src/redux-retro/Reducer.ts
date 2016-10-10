@@ -40,10 +40,6 @@ export const reducer = {
             for (let i = 0; i < boundActions.length; i++) {
                 let boundAction = boundActions[i];
 
-                if (!boundAction.payloadCreatorMethod.actionType) {
-                    throw new Error('Actions classes must be instantiated before calling reducers to which their prototypes are bound.');
-                }
-
                 if (boundAction.payloadCreatorMethod.actionType === action.type) {
                     return boundAction.reducerFunction(state, action);
                 }
