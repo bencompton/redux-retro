@@ -1,0 +1,43 @@
+{
+  "name": "redux-retro",
+  "version": "0.0.1",
+  "description": "A Redux add-on that brings back the clean, minimal-boilerplate syntax you enjoyed with classic Flux libraries like Alt, Reflux, and Flummox, along with better TypeScript support",
+  "main": "src/index.js",
+  "typings": "src/index.d.ts",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bencompton/redux-retro.git"
+  },
+  "keywords": [
+    "redux",
+    "alt",
+    "reflux",
+    "flummox",
+    "typescript"
+  ],
+  "author": "Ben Compton",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bencompton/redux-retro/issues"
+  },
+  "homepage": "https://github.com/bencompton/redux-retro#readme",
+  "devDependencies": {
+    "del": "2.2.2",
+    "gulp": "3.9.1",
+    "gulp-jasmine": "2.4.2",
+    "gulp-sourcemaps": "1.6.0",
+    "gulp-typescript": "2.13.6",
+    "merge2": "1.0.2",
+    "typescript": "1.8.10"
+  },
+  "dependencies": {
+    "bluebird": "^3.4.6",
+    "redux": "^3.6.0"
+  }
+}

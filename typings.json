@@ -1,0 +1,7 @@
+{
+  "name": "redux-retro",
+  "globalDependencies": {
+    "bluebird": "registry:dt/bluebird#3.0.0+20160928162057",
+    "jasmine": "registry:dt/jasmine#2.5.0+20161003201800"
+  }
+}
