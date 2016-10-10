@@ -8,7 +8,7 @@
     "example": "examples"
   },
   "scripts": {
-    "test": "node ./node-modules/gulp/bin/gulp.js test"
+    "test": "gulp test"
   },
   "repository": {
     "type": "git",
