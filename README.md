@@ -3,6 +3,8 @@ redux-retro
 
 A [Redux](http://redux.js.org) add-on that brings back the clean, minimal-boilerplate syntax you enjoyed with classic Flux libraries like Alt, Reflux, and Flummox, along with better TypeScript support
 
+[![Build Status](https://travis-ci.org/bencompton/redux-retro.svg?branch=master)](https://travis-ci.org/bencompton/redux-retro)
+
 ## Motivation
 
 [Redux](http://redux.js.org) is an exceptional library that improves on Flux in a number of ways, propelling the state of the art in UI development forward. However, there are a number of ways that various Flux libraries improved the experiance over vanilla Flux, and Redux Retro aims to bring these improvements back to Redux.
