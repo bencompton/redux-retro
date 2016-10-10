@@ -19,9 +19,11 @@ While libraries like Redux Saga and Redux Loop are cool, at this time, the dust 
 
 Support for TypeScript with vanilla Redux is lacking, and another goal of Redux Retro is improved TypeScript support.
 
-## Prerequisites
+## Who Should Use Redux Retro?
 
-If you haven’t already read through the excellent [Redux documentation](http://) and gained a full understanding of how it works, it is highly recommended that you do so before exploring Redux Retro. If you fully understand Redux and like it just fine the way it is, then you can stop reading and just ignore Redux Retro. If you have never used any Flux libraries before using Redux, you might consider reading the docs of some of the classic libraries and doing some additional research on how they differ from Redux. [This Github example](https://github.com/ethan-deng/Redux-vs-Alt), for instance, does a great job of comparing and contrasting Alt and Redux.
+If you want to use TypeScript and have type safety between your actions and reducers, you should consider giving Redux Retro a try. Also, if you're familliar with classic Flux libraries like Alt, Redux, and Flummox and like the syntax of those libraries, you should also give Redux Retro a try. 
+
+If you have never used any Flux libraries before using Redux, you might consider reading the docs of some of the classic libraries and doing some additional research on how they differ from Redux. [This Github example](https://github.com/ethan-deng/Redux-vs-Alt), for instance, does a great job of comparing and contrasting Alt and Redux. If you haven’t already read through the excellent [Redux documentation](http://) and gained a full understanding of how it works, it is highly recommended that you do so before exploring Redux Retro. If you already fully understand Redux and like it just fine the way it is, then you can stop reading and just ignore Redux Retro. 
 
 ## Examples
 
@@ -173,7 +175,7 @@ interface ITodo {
 	text: string;
 }
 
-class TodoActions {
+class TodoActions extends Actions<ITodo[]> {
 	addTodo(todo: ITodo) {
     	return todo;
     }
@@ -209,4 +211,44 @@ const todoReducer3 = createReducer<ITodo[]>(
 
 ### Asyncronous Actions
 
-Coming soon...
+Many people like the simplicity of tracking the completion of an action, its asynchronous effects, and state changes via promises. This is not so trivial in libraries like Redux Saga and Redux Loop, so people often stick with Redux Thunk. Many people, however, don't like the syntax of Redux Thunk, and it can be especially difficult to read in TypeScript.   
+
+```javascript
+
+class TodoActions extends Actions<ITodo[]> {
+    fetchTodos() {
+        return fetch('todos/')
+            .then(todoFetchSuccessful)
+            .catch(todoFetchFailed)
+    }
+
+    todoFetchSuccessful(todos: ITodo) {
+        return todos;
+    }
+
+    todoFetchFailed(error: Error) {
+        return error;
+    }
+}
+
+```
+
+NOTE: When an action returns a promise, nothing gets dispatched through the store and no reducers are called. Normally, such an action will call another action when the promise resolves, and that action will then return something other than a promise (e.g., the fetched data), which in turn will get dispatched.  
+
+### Checking State from Actions
+
+Accessing app state from actions is often necessary for decision-making within actions. Therefore, Redux Retro's base action class has a handy getState() method.
+
+```javascript
+
+class ShoppingCartActions {
+    addToCart(itemId) {
+        //Only add to cart if not already added, and don't return anything otherwise
+        if (this.getState().cart.items.indexOf(itemId) != -1) {
+            return itemId;
+        }
+    }
+}
+
+```
+NOTE: In cases like this where an action doesn't return anything (or explicitly returns undefined), nothing gets dispatched through the store, and no reducers are called. In cases where an action doesn't need to return a payload, but reducers need to be called, simply return null.
