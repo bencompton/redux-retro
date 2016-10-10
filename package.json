@@ -2,8 +2,8 @@
   "name": "redux-retro",
   "version": "0.0.1",
   "description": "A Redux add-on that brings back the clean, minimal-boilerplate syntax you enjoyed with classic Flux libraries like Alt, Reflux, and Flummox, along with better TypeScript support",
-  "main": "src/index.js",
-  "typings": "src/index.d.ts",
+  "main": "dist/src/index.js",
+  "typings": "dist/src/index.d.ts",
   "directories": {
     "example": "examples"
   },
