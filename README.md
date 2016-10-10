@@ -211,7 +211,9 @@ const todoReducer3 = createReducer<ITodo[]>(
 
 ### Asyncronous Actions
 
-Many people like the simplicity of tracking the completion of an action, its asynchronous effects, and state changes via promises. This is not so trivial in libraries like Redux Saga and Redux Loop, so people often stick with Redux Thunk. Many people, however, don't like the syntax of Redux Thunk, and it can be especially difficult to read in TypeScript.   
+Many people like the simplicity of tracking the completion of an action, its asynchronous effects, and state changes via promises. This is not so trivial in libraries like Redux Saga and Redux Loop, so people often stick with Redux Thunk. Many people, however, don't like the syntax of Redux Thunk, and it can be especially difficult to read in TypeScript.
+
+Here is how asynchronous actions look in Redux Retro:  
 
 ```javascript
 
