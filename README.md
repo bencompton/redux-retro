@@ -1,7 +1,7 @@
 redux-retro
 ======
 
-A [Redux](http://redux.js.org) add-on that brings back the clean, minimal-boilerplate syntax you enjoyed with classic Flux libraries like Alt, Reflux, and Flummox, along with better TypeScript support
+A [Redux](http://redux.js.org) add-on that brings back the clean, minimal-boilerplate syntax you enjoyed with classic Flux libraries like [Alt](http://alt.js.org), [Reflux](https://github.com/reflux/refluxjs), and [Flummox](http://acdlite.github.io/flummox), along with better [TypeScript](https://www.typescriptlang.org) support
 
 [![Build Status](https://travis-ci.org/bencompton/redux-retro.svg?branch=master)](https://travis-ci.org/bencompton/redux-retro)
 
@@ -15,7 +15,7 @@ Many people preferred the boilerplate reduction that Flux libraries such as Alt,
 
 #### Simpler Async Actions
 
-While libraries like Redux Saga and Redux Loop are cool, at this time, the dust still hasn’t settled on the topic of asynchronous actions in redux. Furthermore, libraries like Redux Saga and Redux Loop can make tasks like server rendering and integration testing (i.e., testing actions, asynchronous operations, and reducers together) more challenging, since it isn’t entirely trivial to track the completion of an action, its asynchronous operations, and state changes. Many people are still using redux-thunk, but a lot of people don’t enjoy its syntax and find it difficult to test. Back in the good old days of Alt, Flummox, and Reflux, we just returned promises from our action methods and called it a day. Redux retro brings this back. That being said, Redux Saga, Redux Loop, Redux Thunk, Redux Promise, etc. can all be used with redux-retro if desired.
+While libraries like [Redux Saga](https://github.com/yelouafi/redux-saga) and [Redux Loop](https://github.com/redux-loop/redux-loop) are cool, at this time, the dust still hasn’t settled on the topic of asynchronous actions in Redux. Furthermore, libraries like Redux Saga and Redux Loop can make tasks like server rendering and integration testing (i.e., testing actions, asynchronous operations, and reducers together) more challenging, since it isn’t entirely trivial to track the completion of an action, along with its asynchronous operations and state changes. Many people are still using (Redux Thunk)[https://github.com/gaearon/redux-thunk], but a lot of people don’t enjoy its syntax and find it difficult to test. Back in the good old days of Alt, Flummox, and Reflux, we just returned promises from our actions and called it a day. Redux Retro brings this back. That being said, Redux Saga, Redux Loop, Redux Thunk, Redux Promise, etc. should all be usable Redux Retro if desired.
 
 #### Improved TypeScript Support
 
@@ -25,7 +25,7 @@ Support for TypeScript with vanilla Redux is lacking, and another goal of Redux 
 
 If you want to use TypeScript and have type safety between your actions and reducers, you should consider giving Redux Retro a try. Also, if you're familliar with classic Flux libraries like Alt, Redux, and Flummox and like the syntax of those libraries, you should also give Redux Retro a try. 
 
-If you have never used any Flux libraries before using Redux, you might consider reading the docs of some of the classic libraries and doing some additional research on how they differ from Redux. [This Github example](https://github.com/ethan-deng/Redux-vs-Alt), for instance, does a great job of comparing and contrasting Alt and Redux. If you haven’t already read through the excellent [Redux documentation](http://) and gained a full understanding of how it works, it is highly recommended that you do so before exploring Redux Retro. If you already fully understand Redux and like it just fine the way it is, then you can stop reading and just ignore Redux Retro. 
+If you never used any Flux libraries before using Redux, you might consider reading the docs of some of the classic libraries and doing some additional research on how they differ from Redux. [This Github example](https://github.com/ethan-deng/Redux-vs-Alt), for instance, does a great job of comparing and contrasting Alt and Redux. If you haven’t already read through the excellent [Redux documentation](http://redux.js.org) and gained a full understanding of how it works, it is highly recommended that you do so before exploring Redux Retro. If you already fully understand Redux and like it just fine the way it is, then you can stop reading and just ignore Redux Retro. 
 
 ## Examples
 
@@ -158,7 +158,7 @@ const calculatorReducer = createReducer(0)
     });
 ```
 
-Note that the generated reducer function is just a plain function that is equivalent in its inputs and outputs to the  reducer function above created with vanilla Redux, and is therefore fully compatible with the rest of the Redux ecosystem. For example, this reducer function can be called like so if the need ever arises:
+Note that the generated reducer function is just a plain function that is equivalent in its inputs and outputs to the reducer function above created with vanilla Redux, and is therefore fully compatible with the rest of the Redux ecosystem. For example, this reducer function can be called like so if the need ever arises:
 
 ```javascript
 calculatorReducer(0, {
@@ -206,7 +206,7 @@ const todoReducer3 = createReducer<ITodo[]>(
 	)
     .bindAction(TodoActions.prototype.addTodo, (state, action) => {
     	//Oops, completed doesn't exist on ITodo!
-    	let completed = action.completed;
+    	let completed = action.payload.completed;
     	return [...state, action.payload];
     });
 ```
@@ -245,7 +245,7 @@ Accessing app state from actions is often necessary for decision-making within a
 
 ```javascript
 
-class ShoppingCartActions {
+class ShoppingCartActions extends Actions {
     addToCart(itemId) {
         //Only add to cart if not already added, and don't return anything otherwise
         if (this.getState().cart.items.indexOf(itemId) != -1) {
