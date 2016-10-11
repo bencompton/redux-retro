@@ -171,6 +171,10 @@ calculatorReducer(0, {
 
 ### Improved TypeScript Support
 
+With vanilla Redux, actions and reducers are linked only by an action type string (or constant) and switch statements. This does not give TypeScript enough information to know whether or not the actions and reducers match up. Therefore, TypeScript cannot provide compile-time checking for action and reducer mismatches.
+
+With Redux Retro on the other hand, actions and reducers are linked in a strongly-typed manner.
+
 ```typescript
 interface ITodo {
 	id: number;
@@ -219,18 +223,18 @@ Here is how asynchronous actions look in Redux Retro:
 
 ```javascript
 
-class TodoActions extends Actions<ITodo[]> {
+class TodoActions extends Actions {
     fetchTodos() {
         return fetch('todos/')
             .then(todoFetchSuccessful)
             .catch(todoFetchFailed)
     }
 
-    todoFetchSuccessful(todos: ITodo) {
+    todoFetchSuccessful(todos) {
         return todos;
     }
 
-    todoFetchFailed(error: Error) {
+    todoFetchFailed(error) {
         return error;
     }
 }
