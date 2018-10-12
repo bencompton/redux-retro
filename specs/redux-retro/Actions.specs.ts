@@ -1,6 +1,6 @@
-import {Store} from 'redux';
+import { Store } from 'redux';
 
-import {Actions} from '../../src/redux-retro//Actions';
+import { Actions } from '../../src/redux-retro//Actions';
 
 describe('Actions', () => {
     let mockStore: Store<string>;

@@ -1,8 +1,8 @@
-import {createReducer, IReduxRetroReducer} from '../../src/redux-retro/Reducer';
-import {Actions} from '../../src/redux-retro/Actions';
+import { createReducer, IReduxRetroReducer } from '../../src/redux-retro/Reducer';
+import { Actions } from '../../src/redux-retro/Actions';
 
 describe('Reducers', () => {
-    let reducer: IReduxRetroReducer<string, any>;
+    let reducer: IReduxRetroReducer<string>;
     let initialState = 'initial state';
 
     class TestActions extends Actions<string> {
