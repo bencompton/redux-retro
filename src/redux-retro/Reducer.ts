@@ -1,15 +1,17 @@
-﻿import {IAction} from './Actions';
+﻿import { Reducer } from 'redux';
+
+import { IAction } from './Actions';
 
 export interface IActionReducer<TState, TActionPayload> {
     (state: TState, action: IAction<TActionPayload>): TState;
 }
 
-export interface IReduxRetroReducer<TState, TActionPayload> extends IActionReducer<TState, TActionPayload> {
-    bindAction: <TNextActionPayload>(action: (...args: any[]) => TNextActionPayload, reducer: IActionReducer<TState, TNextActionPayload>) => IReduxRetroReducer<TState, any>;
+export interface IReduxRetroReducer<TState> extends Reducer<TState> {
+    bindAction: <TNextActionPayload>(action: (...args: any[]) => TNextActionPayload, reducer: IActionReducer<TState, TNextActionPayload>) => IReduxRetroReducer<TState>;
 }
 
 export interface IPayloadCreator<TPayload> {
-    (...args: Object[]): TPayload;
+    (...args: any[]): TPayload;
     actionType?: string;
 }
 
@@ -19,7 +21,7 @@ export interface IBoundAction<TActionPayload, TState> {
 }
 
 export interface IReducerWrapper<TState> {
-    reducer: IReduxRetroReducer<TState, any>;
+    reducer: IReduxRetroReducer<TState>;
 }
 
 export const reducer = {
@@ -56,10 +58,10 @@ export const reducer = {
 
         (reducerFunction as any).bindAction = reducer.generateActionBinder<TState>(boundActions, reducerFunction).bindAction;
 
-        return reducerFunction as IReduxRetroReducer<TState, any>;    
+        return reducerFunction as IReduxRetroReducer<TState>;    
     },
 
-    createReducer<TState>(initialState: TState): IReduxRetroReducer<TState, any> {
+    createReducer<TState>(initialState: TState): IReduxRetroReducer<TState> {
         var boundActions: IBoundAction<any, TState>[] = [];
         return reducer.generateReducer<TState>(boundActions, initialState);
     }

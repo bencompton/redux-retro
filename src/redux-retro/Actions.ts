@@ -1,4 +1,4 @@
-﻿import {Store} from 'redux';
+﻿import { Store, Action } from 'redux';
 
 export interface IAction<TPayload> {
     type: any;
@@ -13,7 +13,7 @@ export abstract class Actions<TAppState> {
         this.reconfigureActions();
     }
 
-    getState(): TAppState {
+    public getState(): TAppState {
         return this.store.getState();
     }
 
@@ -57,7 +57,7 @@ export abstract class Actions<TAppState> {
         }
     }
 
-    protected dispatch(action: IAction<any>) {
+    protected dispatch(action: Action | IAction<any>) {
         this.store.dispatch(action);
     }
 }
