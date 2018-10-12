@@ -1,5 +1,6 @@
 import { createReducer, IReduxRetroReducer } from '../../src/redux-retro/Reducer';
 import { Actions } from '../../src/redux-retro/Actions';
+import { Store } from 'redux';
 
 describe('Reducers', () => {
     let reducer: IReduxRetroReducer<string>;
@@ -18,7 +19,7 @@ describe('Reducers', () => {
     let testActions: TestActions;
 
     beforeEach(() => {
-        testActions = new TestActions(null);
+        testActions = new TestActions({} as Store<any>);
         reducer = createReducer<string>(initialState);
     });
 
@@ -27,10 +28,10 @@ describe('Reducers', () => {
             let newState: string;
 
             beforeEach(() => {
-                newState = reducer(null, {
+                newState = reducer(undefined, {
                     type: '@test',
                     payload: null
-                })
+                });
             });
 
             it('should return the reducer\'s initial state', () => {
@@ -63,7 +64,7 @@ describe('Reducers', () => {
         describe('When the reducer is called with an action type not bound to it', () => {
             let otherActionState = 'other action state';
             let passedInState = 'passedInState';
-            let newState: string; 
+            let newState: string;
 
             beforeEach(() => {
                 reducer.bindAction(TestActions.prototype.a, (state, action) => {

@@ -10,6 +10,7 @@
         "experimentalDecorators": true,
         "outDir": "dist",
         "noImplicitAny": false,
-        "rootDir": "."
+        "rootDir": ".",
+        "strict": true
     }
 }
