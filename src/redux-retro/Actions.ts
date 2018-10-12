@@ -2,7 +2,7 @@
 
 export interface IAction<TPayload> {
     type: any;
-    payload?: TPayload;
+    payload: TPayload;
 }
 
 export abstract class Actions<TAppState> {

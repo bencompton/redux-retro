@@ -1,5 +1,4 @@
 import {Store} from 'redux';
-import * as Promise from 'bluebird';
 
 import {Actions} from '../../src/redux-retro//Actions';
 
