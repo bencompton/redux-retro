@@ -221,7 +221,7 @@ Here is how asynchronous actions look in Redux Retro:
 class TodoActions extends Actions {
   async fetchTodos() {
     try {
-      const todos = fetch('/todos/');
+      const todos = await fetch('/todos/');
       todoFetchSuccessful(todos);
     } catch (error) {
       todoFetchFailed(error);
