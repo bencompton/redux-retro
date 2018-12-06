@@ -1,5 +1,3 @@
 .gitignore
-gulpfile.js
 tsconfig.json
-src/
 examples/
