@@ -1,4 +1,4 @@
-redux-retro
+Redux Retro
 ======
 
 A [Redux](http://redux.js.org) add-on that brings back the clean, minimal-boilerplate syntax you enjoyed with classic Flux libraries like [Alt](http://alt.js.org), [Reflux](https://github.com/reflux/refluxjs), and [Flummox](http://acdlite.github.io/flummox), along with better [TypeScript](https://www.typescriptlang.org) support
@@ -45,30 +45,30 @@ export const MULTIPLY = 'MULTIPLY';
 export const DIVIDE = 'DIVIDE';
 
 export const add = (value) => {
-    type: ADD,
-    payload: value;
+  type: ADD,
+  payload: value;
 };
 
 //Action names specified a third time in the action creator function names
 export const subtract = (value) => {
-    return {
-        type: SUBTRACT,
-        payload: value
-    };
+  return {
+    type: SUBTRACT,
+    payload: value
+  };
 };
 
 export const multiply = (value) => {
-    return {
-        type: MULTIPLY,
-        payload: value
-    };
+  return {
+    type: MULTIPLY,
+    payload: value
+  };
 };
 
 export const divide = (value) => {
-    return {
-        type: DIVIDE,
-        payload: value
-    };
+  return {
+    type: DIVIDE,
+    payload: value
+  };
 };
 
 store.dispatch(add(5));
@@ -82,21 +82,21 @@ Libraries like Alt and Flummox automatically generate the action type string fro
 import {store} from 'Store';
 
 export class CalculatorActions extends Actions {
-    add(value) {
-        return value;
-    }
+  add(value) {
+    return value;
+  }
 
-    subtract(value) {
-        return value;
-    }
+  subtract(value) {
+    return value;
+  }
 
-    multiply(value) {
-        return value;
-    }
+  multiply(value) {
+    return value;
+  }
 
-    divide(value) {
-        return value;
-    }
+  divide(value) {
+    return value;
+  }
 }
 
 export calculatorActions = new CalculatorActions(store);
@@ -105,8 +105,8 @@ export calculatorActions = new CalculatorActions(store);
 //For example, the following code dispatches this action behind the scenes:
 //
 //{
-//	type: 'ADD',
-//	payload: 5
+//  type: 'ADD',
+//  payload: 5
 //}
 
 calculatorActions.add(5);
@@ -121,18 +121,18 @@ Many people dislike switch statements in reducers, and while [Redux Actions](htt
 import {ADD, SUBTRACT, MULTIPLY, DIVIDE} from 'CalculatorActions';
 
 const calculatorReducer = (state = 0, action) => {
-    switch (action.type) {
-        case ADD:
-            return state + action.payload;
+  switch (action.type) {
+    case ADD:
+      return state + action.payload;
         case SUBTRACT:
-            return state - action.payload;
+          return state - action.payload;
         case MULTIPLY:
-            return state * action.payload;
+          return state * action.payload;
         case DIVIDE:
-            return state / action.payload;
+          return state / action.payload;
         default:
-            return state;
-    }
+          return state;
+  }
 };
 ```
 
@@ -144,26 +144,26 @@ Redux Retro introduces new reducer syntax that is free of switch statements and 
 import {CalculatorActions} from 'CalculatorActions'
 
 const calculatorReducer = createReducer(0)
-    .bindAction(CalculatorActions.prototype.add, (state, action) => {
-        return state + action.payload;
-    })
-    .bindAction(CalculatorActions.prototype.subtract, (state, action) => {
-        return state - action.payload;
-    })
-    .bindAction(CalculatorActions.prototype.multiply, (state, action) => {
-        return state * action.payload;
-    })
-    .bindAction(CalculatorActions.prototype.divide, (state, action) => {
-        return state / action.payload;
-    });
+  .bindAction(CalculatorActions.prototype.add, (state, action) => {
+    return state + action.payload;
+  })
+  .bindAction(CalculatorActions.prototype.subtract, (state, action) => {
+    return state - action.payload;
+  })
+  .bindAction(CalculatorActions.prototype.multiply, (state, action) => {
+    return state * action.payload;
+  })
+  .bindAction(CalculatorActions.prototype.divide, (state, action) => {
+    return state / action.payload;
+  });
 ```
 
 Note that the generated reducer function is just a plain function that is equivalent in its inputs and outputs to the reducer function above created with vanilla Redux, and is therefore fully compatible with the rest of the Redux ecosystem. For example, this reducer function can be called like so if the need ever arises:
 
 ```javascript
 calculatorReducer(0, {
-	type: 'ADD',
-	payload: 5
+  type: 'ADD',
+  payload: 5
 });
 
 //New state is 5
@@ -177,42 +177,37 @@ With Redux Retro on the other hand, actions and reducers are linked in a strongl
 
 ```typescript
 interface ITodo {
-	id: number;
-	text: string;
+  id: number;
+  text: string;
 }
 
 class TodoActions extends Actions<ITodo[]> {
-	addTodo(todo: ITodo) {
-    	return todo;
-    }
+  addTodo(todo: ITodo) {
+    return todo;
+  }
 }
 
 //This compiles successfully
-const todoReducer1 = createReducer<ITodo[]>(
-		[]
-	)
-    .bindAction(TodoActions.prototype.addTodo, (state, action) => {
-    	return [...state, action.payload];
-    });
+const todoReducer1 = createReducer<ITodo[]>([])
+  .bindAction(TodoActions.prototype.addTodo, (state, action) => {
+    return [...state, action.payload];
+  });
 
 //Compilation fails on this one
-const todoReducer2 = createReducer<ITodo[]>(
-		[]
-	)
-    .bindAction(TodoActions.prototype.addTodo, (state, action) => {
-    	//Trying to return action payload, which is a single ITodo instead of an array
-    	return action.payload;
-    });
+const todoReducer2 = createReducer<ITodo[]>([])
+  .bindAction(TodoActions.prototype.addTodo, (state, action) => {
+    //Trying to return action payload, which is a single ITodo instead of an array
+    return action.payload;
+  });
 
 //Compilation also fails on this one
-const todoReducer3 = createReducer<ITodo[]>(
-		[]
-	)
-    .bindAction(TodoActions.prototype.addTodo, (state, action) => {
-    	//Oops, completed doesn't exist on ITodo!
-    	let completed = action.payload.completed;
-    	return [...state, action.payload];
-    });
+const todoReducer3 = createReducer<ITodo[]>([])
+  .bindAction(TodoActions.prototype.addTodo, (state, action) => {
+    //Oops, completed doesn't exist on ITodo!
+    const completed = action.payload.completed;
+
+    return [...state, action.payload];
+  });
 ```
 
 ### Asyncronous Actions
@@ -224,19 +219,22 @@ Here is how asynchronous actions look in Redux Retro:
 ```javascript
 
 class TodoActions extends Actions {
-    fetchTodos() {
-        return fetch('todos/')
-            .then(todoFetchSuccessful)
-            .catch(todoFetchFailed)
+  async fetchTodos() {
+    try {
+      const todos = await fetch('/todos/');
+      todoFetchSuccessful(todos);
+    } catch (error) {
+      todoFetchFailed(error);
     }
+  }
 
-    todoFetchSuccessful(todos) {
-        return todos;
-    }
+  todoFetchSuccessful(todos) {
+    return todos;
+  }
 
-    todoFetchFailed(error) {
-        return error;
-    }
+  todoFetchFailed(error) {
+    return error;
+  }
 }
 
 ```
@@ -250,12 +248,12 @@ Accessing app state from actions is often necessary for decision-making within a
 ```javascript
 
 class ShoppingCartActions extends Actions {
-    addToCart(itemId) {
-        //Only add to cart if not already added, and don't return anything otherwise
-        if (this.getState().cart.items.indexOf(itemId) != -1) {
-            return itemId;
-        }
+  addToCart(itemId) {
+    //Only add to cart if not already added, and don't return anything otherwise
+    if (this.getState().cart.items.indexOf(itemId) != -1) {
+      return itemId;
     }
+  }
 }
 
 ```
