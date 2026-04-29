@@ -183,9 +183,99 @@ Redux Retro may **not** be the best fit if you:
 - Prefer a purely functional style and have no interest in class-based patterns
 - Have simple state needs where even RTK would be overkill, and a lighter solution (React context, Zustand, Jotai) would serve you better
 
-## Examples
+## Getting Started
 
-### Actions
+### Installation
+
+```sh
+npm install redux redux-retro
+```
+
+For React apps, also install [React Redux Retro](https://github.com/bencompton/react-redux-retro):
+
+```sh
+npm install react react-redux react-redux-retro
+```
+
+### Minimal setup
+
+**1. Define actions**
+
+```typescript
+import { Actions } from 'redux-retro';
+
+export class CounterActions extends Actions<number> {
+    increment(amount: number) { return amount; }
+    decrement(amount: number) { return amount; }
+    reset()                   { return null; }
+}
+```
+
+**2. Define a reducer**
+
+```typescript
+import { createReducer } from 'redux-retro';
+import { CounterActions } from './CounterActions';
+
+export const counterReducer = createReducer<number>(0)
+    .bindAction(CounterActions.prototype.increment, (state, action) => state + action.payload)
+    .bindAction(CounterActions.prototype.decrement, (state, action) => state - action.payload)
+    .bindAction(CounterActions.prototype.reset,     () => 0);
+```
+
+**3. Create a store and wire up actions**
+
+```typescript
+import { createStore } from 'redux';
+import { counterReducer } from './counterReducer';
+import { CounterActions } from './CounterActions';
+
+export const store = createStore(counterReducer);
+export const actions = new CounterActions(store);
+```
+
+**4. Connect to React**
+
+```typescript
+import { connect } from 'react-redux-retro';
+import { CounterActions } from './CounterActions';
+
+export const mapStateToProps = (state: number) => ({ count: state });
+export const mapActionsToProps = (actions: CounterActions) => ({
+    onIncrement: () => actions.increment(1),
+    onDecrement: () => actions.decrement(1),
+    onReset:     () => actions.reset()
+});
+
+export const CounterContainer = connect(mapStateToProps, mapActionsToProps, Counter);
+```
+
+**5. Render with `Provider`**
+
+```tsx
+import * as React from 'react';
+import * as ReactDOM from 'react-dom/client';
+import { Provider } from 'react-redux-retro';
+import { store, actions } from './store';
+import { CounterContainer } from './CounterContainer';
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+    <Provider store={store} actions={actions}>
+        <CounterContainer />
+    </Provider>
+);
+```
+
+## Example Apps
+
+Two runnable examples are included in the [`examples/`](examples/) directory. Both are set up as npm workspaces and their tests run as part of the top-level `npm test`.
+
+| Example | Description |
+|---|---|
+| [calculator](examples/calculator/) | Minimal example — action class, reducer, and tests. No React, no async. The fastest way to understand the core API. |
+| [todo-app](examples/todo-app/) | Full example — async actions, constructor-injected repository (IndexedDB or in-memory mock), React components, react-redux-retro containers, and headless acceptance tests that drive the app through the container API. |
+
+# Actions
 
 Action type strings are automatically derived from method names (camelCase converted to UPPER_SNAKE_CASE), and calling any action method automatically dispatches through the Redux store — no manual `dispatch()` calls needed anywhere.
 
@@ -225,7 +315,7 @@ export const calculatorActions = new CalculatorActions(store);
 calculatorActions.add(5);
 ```
 
-### Reducers
+# Reducers
 
 Redux Retro eliminates switch statements and action type strings from reducers entirely. Reducers bind directly to action method references. Under the hood, every bound reducer is wrapped with [immer](https://immerjs.github.io/immer/)'s `produce`, so you can choose between two styles — returning a new state value, or mutating a draft directly — in exactly the same way as [Redux Toolkit](https://redux-toolkit.js.org/usage/immer-reducers).
 
