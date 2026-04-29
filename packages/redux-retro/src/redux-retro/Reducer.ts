@@ -1,9 +1,10 @@
 ﻿import { Reducer } from 'redux';
+import { produce, Draft } from 'immer';
 
 import { IAction } from './Actions';
 
 export interface IActionReducer<TState, TActionPayload> {
-    (state: TState, action: IAction<TActionPayload>): TState;
+    (state: Draft<TState>, action: IAction<TActionPayload>): TState | void;
 }
 
 export interface IReduxRetroReducer<TState> extends Reducer<TState> {
@@ -49,14 +50,16 @@ export const reducer = {
                 let boundAction = boundActions[i];
 
                 if (boundAction.payloadCreatorMethod.actionType === action.type) {
-                    return boundAction.reducerFunction(state, action);
+                    return produce(state, (draft: Draft<TState>) => {
+                        return boundAction.reducerFunction(draft, action) as any;
+                    }) as TState;
                 }
             }
 
             return state;
         };
 
-        (reducerFunction as any).bindAction = reducer.generateActionBinder<TState>(boundActions, reducerFunction).bindAction;
+        (reducerFunction as any).bindAction = reducer.generateActionBinder<TState>(boundActions, reducerFunction as any).bindAction;
 
         return reducerFunction as unknown as IReduxRetroReducer<TState>;    
     },

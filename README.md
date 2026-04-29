@@ -135,10 +135,16 @@ class TodoActions extends Actions<ITodo[]> {
   }
 }
 
-// ✅ This compiles successfully
+// ✅ This compiles successfully — return-value style
 const todoReducer = createReducer<ITodo[]>([])
   .bindAction(TodoActions.prototype.addTodo, (state, action) => {
     return [...state, action.payload];
+  });
+
+// ✅ This also compiles successfully — immer mutation style
+const todoReducerImmer = createReducer<ITodo[]>([])
+  .bindAction(TodoActions.prototype.addTodo, (draft, action) => {
+    draft.push(action.payload);
   });
 
 // ❌ Compile error: action.payload is ITodo, not ITodo[]
@@ -221,7 +227,7 @@ calculatorActions.add(5);
 
 ### Reducers
 
-Redux Retro eliminates switch statements and action type strings from reducers entirely. Reducers bind directly to action method references.
+Redux Retro eliminates switch statements and action type strings from reducers entirely. Reducers bind directly to action method references. Under the hood, every bound reducer is wrapped with [immer](https://immerjs.github.io/immer/)'s `produce`, so you can choose between two styles — returning a new state value, or mutating a draft directly — in exactly the same way as [Redux Toolkit](https://redux-toolkit.js.org/usage/immer-reducers).
 
 #### Reducer in Vanilla Redux
 
@@ -239,7 +245,9 @@ const calculatorReducer = (state = 0, action) => {
 };
 ```
 
-#### Reducer in Redux Retro
+#### Reducer in Redux Retro — Return-Value Style
+
+For simple or primitive state, return the next state value directly:
 
 ```javascript
 import { createReducer } from 'redux-retro';
@@ -251,6 +259,30 @@ const calculatorReducer = createReducer(0)
   .bindAction(CalculatorActions.prototype.multiply, (state, action) => state * action.payload)
   .bindAction(CalculatorActions.prototype.divide,   (state, action) => state / action.payload);
 ```
+
+#### Reducer in Redux Retro — Immer Mutation Style
+
+For complex or nested object/array state, mutate the immer draft directly and return nothing. Immer produces a new immutable state automatically — the original state is never modified:
+
+```javascript
+import { createReducer } from 'redux-retro';
+import { TodoActions } from 'TodoActions';
+
+const todoReducer = createReducer([])
+  .bindAction(TodoActions.prototype.addTodo, (draft, action) => {
+    draft.push(action.payload);                       // mutate draft directly
+  })
+  .bindAction(TodoActions.prototype.completeTodo, (draft, action) => {
+    const todo = draft.find(t => t.id === action.payload);
+    if (todo) todo.completed = true;                  // nested mutation, no spread needed
+  })
+  .bindAction(TodoActions.prototype.removeTodo, (draft, action) => {
+    const index = draft.findIndex(t => t.id === action.payload);
+    if (index !== -1) draft.splice(index, 1);
+  });
+```
+
+> **Note:** You can freely mix both styles across different `bindAction` calls on the same reducer. If a bound reducer returns a value, that value becomes the new state. If it returns `undefined` (i.e., returns nothing), immer uses the mutated draft instead.
 
 The generated reducer is a plain Redux reducer function, fully compatible with the rest of the Redux ecosystem:
 
