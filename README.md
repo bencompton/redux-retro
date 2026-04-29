@@ -1,179 +1,127 @@
 Redux Retro
 ======
 
-A [Redux](http://redux.js.org) add-on that brings back the clean, minimal-boilerplate syntax you enjoyed with classic Flux libraries like [Alt](http://alt.js.org), [Reflux](https://github.com/reflux/refluxjs), and [Flummox](http://acdlite.github.io/flummox), along with better [TypeScript](https://www.typescriptlang.org) support
+A [Redux](http://redux.js.org) add-on that reduces boilerplate, improves [TypeScript](https://www.typescriptlang.org) type safety, and brings a class-based action model that makes complex business logic and async I/O easy to test.
 
 [![Build Status](https://travis-ci.org/bencompton/redux-retro.svg?branch=master)](https://travis-ci.org/bencompton/redux-retro)
 
 ## Motivation
 
-[Redux](http://redux.js.org) is an exceptional library that improves on Flux in a number of ways, propelling the state of the art in UI development forward. However, there are a number of ways that various Flux libraries improved the experiance over vanilla Flux, and Redux Retro aims to bring these improvements back to Redux.
+[Redux Toolkit](https://redux-toolkit.js.org) (RTK) is the current official recommendation for writing Redux logic, and it genuinely solves many of Redux's original pain points — `createSlice` eliminates action type constants, `createAsyncThunk` handles async patterns, and TypeScript support is solid. So why would you choose Redux Retro instead?
 
-#### Reduced Boilerplate
+The short answer: **Redux Retro treats actions as classes**, which enables a different, more testable architecture that RTK's function-centric model cannot replicate as cleanly.
 
-Many people preferred the boilerplate reduction that Flux libraries such as Alt, Reflux, and Flummox offered over vanilla Flux and much of the same syntactic sugar is also applicable to Redux. Redux retro aims to bring back this classic syntax.
+#### Cleaner Syntax with Less Boilerplate
 
-#### Simpler Async Actions
+Redux Toolkit's `createSlice` and `createAsyncThunk` are improvements over vanilla Redux, but they still require you to wire up action creators, export them, import them elsewhere, and call `dispatch()` manually at every call site. Redux Retro eliminates all of that. Action classes auto-dispatch when their methods are called, action type strings are derived automatically from method names, and reducers bind directly to action methods with no constants or string matching.
 
-While libraries like [Redux Saga](https://github.com/yelouafi/redux-saga) and [Redux Loop](https://github.com/redux-loop/redux-loop) are cool, at this time, the dust still hasn’t settled on the topic of asynchronous actions in Redux. Furthermore, libraries like Redux Saga and Redux Loop can make tasks like server rendering and integration testing (i.e., testing actions, asynchronous operations, and reducers together) more challenging, since it isn’t entirely trivial to track the completion of an action, along with its asynchronous operations and state changes. Many people are still using [Redux Thunk](https://github.com/gaearon/redux-thunk), but a lot of people don’t enjoy its syntax and find it difficult to test. Back in the good old days of Alt, Flummox, and Reflux, we just returned promises from our actions and called it a day. Redux Retro brings this back. That being said, Redux Saga, Redux Loop, Redux Thunk, Redux Promise, etc. should all be usable Redux Retro if desired.
+Compare a simple counter in each:
 
-#### Improved TypeScript Support
+**Redux Toolkit**
 
-Support for TypeScript with vanilla Redux is lacking, and another goal of Redux Retro is improved TypeScript support.
+```typescript
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-## Who Should Use Redux Retro?
-
-If you want to use TypeScript and have type safety between your actions and reducers, you should consider giving Redux Retro a try. Also, if you're familliar with classic Flux libraries like Alt, Redux, and Flummox and like the syntax of those libraries, you should also give Redux Retro a try. 
-
-If you never used any Flux libraries before using Redux, you might consider reading the docs of some of the classic libraries and doing some additional research on how they differ from Redux. [This Github example](https://github.com/ethan-deng/Redux-vs-Alt), for instance, does a great job of comparing and contrasting Alt and Redux. If you haven’t already read through the excellent [Redux documentation](http://redux.js.org) and gained a full understanding of how it works, it is highly recommended that you do so before exploring Redux Retro. If you already fully understand Redux and like it just fine the way it is, then you can stop reading and just ignore Redux Retro. 
-
-## Examples
-
-### Actions
-
-Many people object to using action type strings and constants, arguing that they violate the [DRY principle](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself) in that the knowledge of an action name is duplicated: the action creator function has the action name, the action type string repeats the action name, and when using constant variables, the action name is repeated yet a third time. Also, many people like action functions that automatically dispatch. Redux Retro addresses both of these concerns. For example:
-
-#### Actions in Vanilla Redux
-
-```javascript
-import {store} from 'Store';
-
-//Action names specified twice in const variable declarations
-export const ADD = 'ADD';
-export const SUBTRACT = 'SUBTRACT';
-export const MULTIPLY = 'MULTIPLY';
-export const DIVIDE = 'DIVIDE';
-
-export const add = (value) => {
-  type: ADD,
-  payload: value;
-};
-
-//Action names specified a third time in the action creator function names
-export const subtract = (value) => {
-  return {
-    type: SUBTRACT,
-    payload: value
-  };
-};
-
-export const multiply = (value) => {
-  return {
-    type: MULTIPLY,
-    payload: value
-  };
-};
-
-export const divide = (value) => {
-  return {
-    type: DIVIDE,
-    payload: value
-  };
-};
-
-store.dispatch(add(5));
-```
-
-#### Actions in Redux Retro
-
-Libraries like Alt and Flummox automatically generate the action type string from the action method name, and automatically dispatch actions through the dispatcher. Redux Retro brings this back.
-
-```javascript
-import {store} from 'Store';
-
-export class CalculatorActions extends Actions {
-  add(value) {
-    return value;
-  }
-
-  subtract(value) {
-    return value;
-  }
-
-  multiply(value) {
-    return value;
-  }
-
-  divide(value) {
-    return value;
-  }
-}
-
-export calculatorActions = new CalculatorActions(store);
-
-//Calling an action method dispatches that action through the Redux store for you. 
-//For example, the following code dispatches this action behind the scenes:
-//
-//{
-//  type: 'ADD',
-//  payload: 5
-//}
-
-calculatorActions.add(5);
-```
-### Reducers
-
-Many people dislike switch statements in reducers, and while [Redux Actions](https://github.com/acdlite/redux-actions), for example, eliminates the need for switch statements, it does not eliminate action type strings / constants.
-
-#### Reducer in Vanilla Redux
-
-```javascript
-import {ADD, SUBTRACT, MULTIPLY, DIVIDE} from 'CalculatorActions';
-
-const calculatorReducer = (state = 0, action) => {
-  switch (action.type) {
-    case ADD:
-      return state + action.payload;
-        case SUBTRACT:
-          return state - action.payload;
-        case MULTIPLY:
-          return state * action.payload;
-        case DIVIDE:
-          return state / action.payload;
-        default:
-          return state;
-  }
-};
-```
-
-#### Reducer in Redux Retro
-
-Redux Retro introduces new reducer syntax that is free of switch statements and action type strings / constants. It creates a single reducer function that can be bound to actions like so:
-
-```javascript
-import {CalculatorActions} from 'CalculatorActions'
-
-const calculatorReducer = createReducer(0)
-  .bindAction(CalculatorActions.prototype.add, (state, action) => {
-    return state + action.payload;
-  })
-  .bindAction(CalculatorActions.prototype.subtract, (state, action) => {
-    return state - action.payload;
-  })
-  .bindAction(CalculatorActions.prototype.multiply, (state, action) => {
-    return state * action.payload;
-  })
-  .bindAction(CalculatorActions.prototype.divide, (state, action) => {
-    return state / action.payload;
-  });
-```
-
-Note that the generated reducer function is just a plain function that is equivalent in its inputs and outputs to the reducer function above created with vanilla Redux, and is therefore fully compatible with the rest of the Redux ecosystem. For example, this reducer function can be called like so if the need ever arises:
-
-```javascript
-calculatorReducer(0, {
-  type: 'ADD',
-  payload: 5
+const counterSlice = createSlice({
+  name: 'counter',
+  initialState: 0,
+  reducers: {
+    add: (state, action: PayloadAction<number>) => state + action.payload,
+    subtract: (state, action: PayloadAction<number>) => state - action.payload,
+  },
 });
 
-//New state is 5
+export const { add, subtract } = counterSlice.actions;
+export default counterSlice.reducer;
+
+// At the call site — dispatch must be called explicitly every time
+dispatch(add(5));
 ```
 
-### Improved TypeScript Support
+**Redux Retro**
 
-With vanilla Redux, actions and reducers are linked only by an action type string (or constant) and switch statements. This does not give TypeScript enough information to know whether or not the actions and reducers match up. Therefore, TypeScript cannot provide compile-time checking for action and reducer mismatches.
+```typescript
+import { Actions, createReducer } from 'redux-retro';
 
-With Redux Retro on the other hand, actions and reducers are linked in a strongly-typed manner.
+export class CalculatorActions extends Actions<number> {
+  add(value: number) { return value; }
+  subtract(value: number) { return value; }
+}
+
+export const calculatorActions = new CalculatorActions(store);
+
+// Dispatches automatically — no dispatch() call needed
+calculatorActions.add(5);
+
+export const calculatorReducer = createReducer<number>(0)
+  .bindAction(CalculatorActions.prototype.add, (state, action) => state + action.payload)
+  .bindAction(CalculatorActions.prototype.subtract, (state, action) => state - action.payload);
+```
+
+#### Class-Based Actions for Domain Logic
+
+Redux Retro's `Actions` base class is designed to work like an MVC controller. Rather than thin functions that only return payloads, action classes can:
+
+- Coordinate multi-step domain logic across multiple actions
+- Read current app state via `this.getState()`
+- Compose async workflows with `async`/`await` using natural, readable syntax
+- Encapsulate decision-making and orchestration in one cohesive place
+
+This is a fundamentally different model from RTK's `createAsyncThunk`, which relies on middleware-dispatched thunks and can make it harder to express complex conditional logic or multi-action sequences in a clean, readable way.
+
+#### Constructor-Injected Dependencies for Strong Testability
+
+Because actions are classes, their dependencies — particularly async I/O such as API clients, storage adapters, or timers — can be **constructor-injected**. This means you can substitute lightweight mock implementations in tests without any mocking frameworks, module interception, or patching of globals.
+
+```typescript
+interface ITodoApi {
+  getTodos(): Promise<ITodo[]>;
+}
+
+class TodoActions extends Actions<IAppState> {
+  constructor(store: Store<IAppState>, private api: ITodoApi) {
+    super(store);
+  }
+
+  async fetchTodos() {
+    try {
+      const todos = await this.api.getTodos();
+      this.fetchTodosSucceeded(todos);
+    } catch (error) {
+      this.fetchTodosFailed(error);
+    }
+  }
+
+  fetchTodosSucceeded(todos: ITodo[]) {
+    return todos;
+  }
+
+  fetchTodosFailed(error: Error) {
+    return error;
+  }
+}
+```
+
+In tests, simply pass in a mock `api` — no `jest.mock()`, no module factory, no middleware setup, no MSW server:
+
+```typescript
+const mockApi: ITodoApi = {
+  getTodos: async () => [{ id: 1, text: 'Write tests' }]
+};
+
+const actions = new TodoActions(store, mockApi);
+await actions.fetchTodos();
+
+expect(store.getState().todos).toHaveLength(1);
+```
+
+Testing async logic in RTK typically requires configuring a test store with middleware and either mocking `fetch`/`axios` globally. The constructor injection pattern here eliminates that infrastructure entirely.
+
+#### Improved TypeScript Type Safety
+
+Both Redux Toolkit and Redux Retro offer TypeScript support, but the mechanisms differ. RTK infers types from `createSlice` definitions, which works well for straightforward cases but requires extra ceremony with `PayloadAction<T>` annotations and typed hooks for anything beyond simple reducers.
+
+Redux Retro binds reducers directly to action method *references* — not strings — so the TypeScript compiler knows the exact payload type of every bound action and will catch mismatches at compile time:
 
 ```typescript
 interface ITodo {
@@ -187,74 +135,168 @@ class TodoActions extends Actions<ITodo[]> {
   }
 }
 
-//This compiles successfully
-const todoReducer1 = createReducer<ITodo[]>([])
+// ✅ This compiles successfully
+const todoReducer = createReducer<ITodo[]>([])
   .bindAction(TodoActions.prototype.addTodo, (state, action) => {
     return [...state, action.payload];
   });
 
-//Compilation fails on this one
-const todoReducer2 = createReducer<ITodo[]>([])
+// ❌ Compile error: action.payload is ITodo, not ITodo[]
+const badReducer1 = createReducer<ITodo[]>([])
   .bindAction(TodoActions.prototype.addTodo, (state, action) => {
-    //Trying to return action payload, which is a single ITodo instead of an array
     return action.payload;
   });
 
-//Compilation also fails on this one
-const todoReducer3 = createReducer<ITodo[]>([])
+// ❌ Compile error: 'completed' does not exist on ITodo
+const badReducer2 = createReducer<ITodo[]>([])
   .bindAction(TodoActions.prototype.addTodo, (state, action) => {
-    //Oops, completed doesn't exist on ITodo!
     const completed = action.payload.completed;
-
     return [...state, action.payload];
   });
 ```
 
-### Asyncronous Actions
+#### Designed for React Redux Retro
 
-Many people like the simplicity of tracking the completion of an action, its asynchronous effects, and state changes via promises. This is not so trivial in libraries like Redux Saga and Redux Loop, so people often stick with Redux Thunk. Many people, however, don't like the syntax of Redux Thunk, and it can be especially difficult to read in TypeScript.
+Redux Retro is designed to pair with [React Redux Retro](https://github.com/bencompton/react-redux-retro), which provides a clean separation of concerns between React components and app logic via `Connect`, `mapStateToProps`, and `mapActionsToProps`.
 
-Here is how asynchronous actions look in Redux Retro:  
+Every container in a React Redux Retro app defines what state and what actions a component needs. This means **the set of all containers forms a top-level API for your app's interesting logic** — state derivation and action invocation — which can be exercised in integration tests independently of React. Tests can instantiate the store, inject mock dependencies into action classes, call actions through the container's mapped API, and assert on resulting state, all without rendering a single component.
+
+## Who Should Use Redux Retro?
+
+Redux Retro is a good fit if you:
+
+- Want **constructor-injected, mockable dependencies** in your action layer for clean, fast unit and integration tests
+- Want action classes that work like **MVC controllers**, coordinating domain logic in one cohesive place
+- Value **reduced boilerplate** and prefer dispatching to be automatic rather than explicit at every call site
+- Are building a React app with [React Redux Retro](https://github.com/bencompton/react-redux-retro) and want a well-defined, testable top-level app API
+
+Redux Retro may **not** be the best fit if you:
+
+- Are already deeply invested in the Redux Toolkit ecosystem and its conventions, including RTK Query for data fetching
+- Need tight integration with RTK-specific middleware or tooling that depends on RTK's action creator metadata
+- Prefer a purely functional style and have no interest in class-based patterns
+- Have simple state needs where even RTK would be overkill, and a lighter solution (React context, Zustand, Jotai) would serve you better
+
+## Examples
+
+### Actions
+
+Action type strings are automatically derived from method names (camelCase converted to UPPER_SNAKE_CASE), and calling any action method automatically dispatches through the Redux store — no manual `dispatch()` calls needed anywhere.
+
+#### Actions in Vanilla Redux
 
 ```javascript
+import { store } from 'Store';
 
+export const ADD = 'ADD';
+export const SUBTRACT = 'SUBTRACT';
+export const MULTIPLY = 'MULTIPLY';
+export const DIVIDE = 'DIVIDE';
+
+export const add = (value) => ({ type: ADD, payload: value });
+export const subtract = (value) => ({ type: SUBTRACT, payload: value });
+export const multiply = (value) => ({ type: MULTIPLY, payload: value });
+export const divide = (value) => ({ type: DIVIDE, payload: value });
+
+store.dispatch(add(5));
+```
+
+#### Actions in Redux Retro
+
+```javascript
+import { Actions } from 'redux-retro';
+
+export class CalculatorActions extends Actions {
+  add(value) { return value; }
+  subtract(value) { return value; }
+  multiply(value) { return value; }
+  divide(value) { return value; }
+}
+
+export const calculatorActions = new CalculatorActions(store);
+
+// Automatically dispatches: { type: 'ADD', payload: 5 }
+calculatorActions.add(5);
+```
+
+### Reducers
+
+Redux Retro eliminates switch statements and action type strings from reducers entirely. Reducers bind directly to action method references.
+
+#### Reducer in Vanilla Redux
+
+```javascript
+import { ADD, SUBTRACT, MULTIPLY, DIVIDE } from 'CalculatorActions';
+
+const calculatorReducer = (state = 0, action) => {
+  switch (action.type) {
+    case ADD:      return state + action.payload;
+    case SUBTRACT: return state - action.payload;
+    case MULTIPLY: return state * action.payload;
+    case DIVIDE:   return state / action.payload;
+    default:       return state;
+  }
+};
+```
+
+#### Reducer in Redux Retro
+
+```javascript
+import { createReducer } from 'redux-retro';
+import { CalculatorActions } from 'CalculatorActions';
+
+const calculatorReducer = createReducer(0)
+  .bindAction(CalculatorActions.prototype.add,      (state, action) => state + action.payload)
+  .bindAction(CalculatorActions.prototype.subtract, (state, action) => state - action.payload)
+  .bindAction(CalculatorActions.prototype.multiply, (state, action) => state * action.payload)
+  .bindAction(CalculatorActions.prototype.divide,   (state, action) => state / action.payload);
+```
+
+The generated reducer is a plain Redux reducer function, fully compatible with the rest of the Redux ecosystem:
+
+```javascript
+calculatorReducer(0, { type: 'ADD', payload: 5 }); // => 5
+```
+
+### Asynchronous Actions
+
+Async action methods return a promise. Redux Retro detects this and does not dispatch anything for the async method itself. Instead, the async method drives the workflow and calls other action methods when it has results to dispatch.
+
+```javascript
 class TodoActions extends Actions {
   async fetchTodos() {
     try {
-      const todos = await fetch('/todos/');
-      todoFetchSuccessful(todos);
+      const todos = await this.api.getTodos();
+      this.fetchTodosSucceeded(todos);
     } catch (error) {
-      todoFetchFailed(error);
+      this.fetchTodosFailed(error);
     }
   }
 
-  todoFetchSuccessful(todos) {
-    return todos;
+  fetchTodosSucceeded(todos) {
+    return todos;  // dispatched
   }
 
-  todoFetchFailed(error) {
-    return error;
+  fetchTodosFailed(error) {
+    return error;  // dispatched
   }
 }
-
 ```
-
-NOTE: When an action returns a promise, nothing gets dispatched through the store and no reducers are called. Normally, such an action will call another action when the promise resolves, and that action will then return something other than a promise (e.g., the fetched data), which in turn will get dispatched.  
 
 ### Checking State from Actions
 
-Accessing app state from actions is often necessary for decision-making within actions. Therefore, Redux Retro's base action class has a handy getState() method.
+`this.getState()` is available in any action method for reading current app state before deciding what to do:
 
 ```javascript
-
 class ShoppingCartActions extends Actions {
   addToCart(itemId) {
-    //Only add to cart if not already added, and don't return anything otherwise
-    if (this.getState().cart.items.indexOf(itemId) != -1) {
-      return itemId;
+    // Only add if not already in cart
+    if (this.getState().cart.items.indexOf(itemId) === -1) {
+      return itemId;  // dispatched
     }
+    // Returning undefined dispatches nothing
   }
 }
-
 ```
-NOTE: In cases like this where an action doesn't return anything (or explicitly returns undefined), nothing gets dispatched through the store, and no reducers are called. In cases where an action doesn't need to return a payload, but reducers need to be called, simply return null.
+
+> **Note:** When an action method returns `undefined` (or nothing), no dispatch occurs and no reducers run. When a dispatch is needed but there is no meaningful payload, return `null`.
