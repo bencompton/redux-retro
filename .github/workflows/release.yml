@@ -44,16 +44,39 @@ jobs:
           NEW_VERSION=$(node -p "require('./packages/react-redux-retro/package.json').version")
           echo "version=${NEW_VERSION}" >> $GITHUB_OUTPUT
 
-      - name: Create and push git tags
+      - name: Check if tags already exist
+        id: check-tags
+        run: |
+          git fetch --tags
+          if git rev-parse "redux-retro-${{ steps.bump-redux-retro.outputs.version }}" >/dev/null 2>&1; then
+            echo "redux-retro-exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "redux-retro-exists=false" >> $GITHUB_OUTPUT
+          fi
+          if git rev-parse "react-redux-retro-${{ steps.bump-react-redux-retro.outputs.version }}" >/dev/null 2>&1; then
+            echo "react-redux-retro-exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "react-redux-retro-exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create and push redux-retro tag
+        if: steps.check-tags.outputs.redux-retro-exists == 'false'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git tag "redux-retro-${{ steps.bump-redux-retro.outputs.version }}"
-          git tag "react-redux-retro-${{ steps.bump-react-redux-retro.outputs.version }}"
           git push origin "redux-retro-${{ steps.bump-redux-retro.outputs.version }}"
+
+      - name: Create and push react-redux-retro tag
+        if: steps.check-tags.outputs.react-redux-retro-exists == 'false'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "react-redux-retro-${{ steps.bump-react-redux-retro.outputs.version }}"
           git push origin "react-redux-retro-${{ steps.bump-react-redux-retro.outputs.version }}"
 
       - name: Create redux-retro GitHub release
+        if: steps.check-tags.outputs.redux-retro-exists == 'false'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: redux-retro-${{ steps.bump-redux-retro.outputs.version }}
@@ -61,6 +84,7 @@ jobs:
           generate_release_notes: true
 
       - name: Create react-redux-retro GitHub release
+        if: steps.check-tags.outputs.react-redux-retro-exists == 'false'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: react-redux-retro-${{ steps.bump-react-redux-retro.outputs.version }}
@@ -68,12 +92,14 @@ jobs:
           generate_release_notes: true
 
       - name: Publish redux-retro to npm
+        if: steps.check-tags.outputs.redux-retro-exists == 'false'
         working-directory: packages/redux-retro
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish react-redux-retro to npm
+        if: steps.check-tags.outputs.react-redux-retro-exists == 'false'
         working-directory: packages/react-redux-retro
         run: npm publish --access public
         env:
