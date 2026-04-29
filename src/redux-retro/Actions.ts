@@ -1,4 +1,4 @@
-﻿import { Store, Action } from 'redux';
+﻿import { Store, UnknownAction } from 'redux';
 
 export interface IAction<TPayload> {
     type: any;
@@ -57,7 +57,7 @@ export abstract class Actions<TAppState> {
         }
     }
 
-    protected dispatch(action: Action | IAction<any>) {
+    protected dispatch(action: UnknownAction | IAction<any>) {
         this.store.dispatch(action);
     }
 }
