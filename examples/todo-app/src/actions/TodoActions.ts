@@ -2,7 +2,7 @@ import { Actions } from 'redux-retro';
 import { Store } from 'redux';
 import { ITodo, ITodoRepository } from '../repositories/todo/ITodoRepository';
 
-export { ITodo } from '../repositories/todo/ITodoRepository';
+export type { ITodo } from '../repositories/todo/ITodoRepository';
 
 export interface ITodoAppState {
     todos: ITodo[];

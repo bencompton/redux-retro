@@ -2,9 +2,9 @@
     "compilerOptions": {
         "target": "es5",
         "lib": ["esnext", "dom"],
-        "types": ["jest"],
+        "types": ["jest", "vite/client"],
         "declaration": true,
-        "module": "commonjs",
+        "module": "esnext",
         "sourceMap": true,
         "moduleResolution": "node",
         "emitDecoratorMetadata": true,
