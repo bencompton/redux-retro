@@ -5,6 +5,7 @@ module.exports = {
     '^.+\\.tsx?$': ['ts-jest', { tsconfig: 'tsconfig.test.json' }]
   },
   moduleNameMapper: {
-    '^redux-retro$': '<rootDir>/../../packages/redux-retro/src/index.ts'
+    '^redux-retro$': '<rootDir>/../../packages/redux-retro/src/index.ts',
+    '^react-redux-retro$': '<rootDir>/../../packages/react-redux-retro/src/index.ts'
   }
 };
