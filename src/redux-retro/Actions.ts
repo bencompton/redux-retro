@@ -3,6 +3,7 @@
 export interface IAction<TPayload> {
     type: any;
     payload: TPayload;
+    [extraProps: string]: unknown;
 }
 
 export abstract class Actions<TAppState> {

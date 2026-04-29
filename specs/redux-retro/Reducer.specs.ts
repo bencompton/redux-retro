@@ -83,8 +83,8 @@ describe('Reducers', () => {
         });
 
         describe('When a reducer is bound to action types A and B, and action type A is dispatched', () => {
-            let reducerFunctionForActionA = jasmine.createSpy('reducerFunctionForActionA');
-            let reducerFunctionForActionB = jasmine.createSpy('reducerFunctionForActionB');
+            let reducerFunctionForActionA = jest.fn();
+            let reducerFunctionForActionB = jest.fn();
 
             beforeEach(() => {
                 reducer

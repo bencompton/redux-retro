@@ -2,6 +2,7 @@
     "compilerOptions": {
         "target": "es5",
         "lib": ["esnext"],
+        "types": ["jest"],
         "declaration": true,
         "module": "commonjs",
         "sourceMap": true,

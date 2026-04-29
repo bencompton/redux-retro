@@ -58,7 +58,7 @@ export const reducer = {
 
         (reducerFunction as any).bindAction = reducer.generateActionBinder<TState>(boundActions, reducerFunction).bindAction;
 
-        return reducerFunction as IReduxRetroReducer<TState>;    
+        return reducerFunction as unknown as IReduxRetroReducer<TState>;    
     },
 
     createReducer<TState>(initialState: TState): IReduxRetroReducer<TState> {

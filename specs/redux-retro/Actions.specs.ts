@@ -7,7 +7,7 @@ describe('Actions', () => {
 
     beforeEach(() => {
         mockStore = ({
-            dispatch: jasmine.createSpy('dispatch')
+            dispatch: jest.fn()
         } as any);
     });
 
@@ -27,15 +27,15 @@ describe('Actions', () => {
             });
 
             it('should dispatch the action through the store', () => {
-                expect((mockStore.dispatch as jasmine.Spy).calls.count()).toBe(1);
+                expect((mockStore.dispatch as jest.Mock).mock.calls.length).toBe(1);
             });
 
             it('should dispatch with an action type string that is an uppercase version of the method name', () => {
-                expect((mockStore.dispatch as jasmine.Spy).calls.first().args[0].type).toBe('SOME_ACTION');
+                expect((mockStore.dispatch as jest.Mock).mock.calls[0][0].type).toBe('SOME_ACTION');
             });
 
             it('should dispatch with a payload that is what the method returned', () => {
-                expect((mockStore.dispatch as jasmine.Spy).calls.first().args[0].payload).toBe(actionPayload);                
+                expect((mockStore.dispatch as jest.Mock).mock.calls[0][0].payload).toBe(actionPayload);
             });
         });
         
@@ -52,7 +52,7 @@ describe('Actions', () => {
             });
 
             it('should not dispatch an action through the store', () => {
-                expect((mockStore.dispatch as jasmine.Spy)).not.toHaveBeenCalled();
+                expect(mockStore.dispatch).not.toHaveBeenCalled();
             });
         });
 
@@ -69,7 +69,7 @@ describe('Actions', () => {
             });
 
             it('should not dispatch an action through the store', () => {
-                expect((mockStore.dispatch as jasmine.Spy)).not.toHaveBeenCalled();
+                expect(mockStore.dispatch).not.toHaveBeenCalled();
             });
         });
     });
@@ -93,9 +93,9 @@ describe('Actions', () => {
         });
 
         it('should dispatch the action through the store', () => {
-            expect((mockStore.dispatch as jasmine.Spy).calls.count()).toBe(1);
-            expect((mockStore.dispatch as jasmine.Spy).calls.first().args[0].type).toBe(actionType);
-            expect((mockStore.dispatch as jasmine.Spy).calls.first().args[0].payload).toBe(payload);
+            expect((mockStore.dispatch as jest.Mock).mock.calls.length).toBe(1);
+            expect((mockStore.dispatch as jest.Mock).mock.calls[0][0].type).toBe(actionType);
+            expect((mockStore.dispatch as jest.Mock).mock.calls[0][0].payload).toBe(payload);
         });
     });
 });
