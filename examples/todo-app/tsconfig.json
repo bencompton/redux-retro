@@ -1,7 +1,8 @@
 {
     "compilerOptions": {
         "target": "es5",
-        "lib": ["esnext"],
+        "lib": ["esnext", "dom"],
+        "types": ["jest"],
         "declaration": true,
         "module": "commonjs",
         "sourceMap": true,
@@ -10,9 +11,11 @@
         "experimentalDecorators": true,
         "outDir": "dist",
         "noImplicitAny": false,
-        "rootDir": ".",
         "strict": true,
-        "skipLibCheck": true,
-        "jsx": "react"
+        "jsx": "react",
+        "paths": {
+            "redux-retro": ["../../packages/redux-retro/src/index.ts"],
+            "react-redux-retro": ["../../packages/react-redux-retro/src/index.ts"]
+        }
     }
 }

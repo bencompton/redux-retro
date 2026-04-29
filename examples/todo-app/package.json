@@ -1,0 +1,27 @@
+{
+  "name": "todo-app-example",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Todo app example demonstrating redux-retro and react-redux-retro together, with localStorage persistence and a mockable storage interface for testing",
+  "_note": "redux-retro and react-redux-retro are referenced via local file: paths for monorepo development. If you are using this example outside the monorepo, change 'file:../../packages/redux-retro' to 'redux-retro' and 'file:../../packages/react-redux-retro' to 'react-redux-retro', then run npm install.",
+  "scripts": {
+    "test": "jest --colors --silent"
+  },
+  "dependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-redux": "^9.0.0",
+    "redux": "^5.0.0",
+    "redux-retro": "file:../../packages/redux-retro",
+    "react-redux-retro": "file:../../packages/react-redux-retro"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "@types/react-redux": "^7.1.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.0.0"
+  }
+}

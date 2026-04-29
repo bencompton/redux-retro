@@ -2,7 +2,8 @@
   "name": "redux-retro-monorepo",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "examples/*"
   ],
   "scripts": {
     "test": "npm run test --workspaces --if-present",
