@@ -1,0 +1,84 @@
+name: Test, Release & Publish
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  release:
+    name: Test, Version, Tag & Publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build packages
+        run: npm run build
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Bump redux-retro version (patch)
+        id: bump-redux-retro
+        working-directory: packages/redux-retro
+        run: |
+          NEW_VERSION=$(npm version patch --no-git-tag-version)
+          echo "version=${NEW_VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Bump react-redux-retro version (patch)
+        id: bump-react-redux-retro
+        working-directory: packages/react-redux-retro
+        run: |
+          NEW_VERSION=$(npm version patch --no-git-tag-version)
+          echo "version=${NEW_VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Commit version bumps
+        run: |
+          git add packages/redux-retro/package.json packages/react-redux-retro/package.json
+          git commit -m "chore: release redux-retro ${{ steps.bump-redux-retro.outputs.version }} and react-redux-retro ${{ steps.bump-react-redux-retro.outputs.version }} [skip ci]"
+          git push
+
+      - name: Create redux-retro GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: redux-retro-${{ steps.bump-redux-retro.outputs.version }}
+          name: redux-retro ${{ steps.bump-redux-retro.outputs.version }}
+          generate_release_notes: true
+
+      - name: Create react-redux-retro GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: react-redux-retro-${{ steps.bump-react-redux-retro.outputs.version }}
+          name: react-redux-retro ${{ steps.bump-react-redux-retro.outputs.version }}
+          generate_release_notes: true
+
+      - name: Publish redux-retro to npm
+        working-directory: packages/redux-retro
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish react-redux-retro to npm
+        working-directory: packages/react-redux-retro
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
