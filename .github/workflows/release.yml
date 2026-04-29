@@ -32,32 +32,26 @@ jobs:
       - name: Build packages
         run: npm run build
 
-      - name: Configure Git
+      - name: Read redux-retro version
+        id: bump-redux-retro
+        run: |
+          NEW_VERSION=$(node -p "require('./packages/redux-retro/package.json').version")
+          echo "version=${NEW_VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Read react-redux-retro version
+        id: bump-react-redux-retro
+        run: |
+          NEW_VERSION=$(node -p "require('./packages/react-redux-retro/package.json').version")
+          echo "version=${NEW_VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Create and push git tags
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Bump redux-retro version (patch)
-        id: bump-redux-retro
-        working-directory: packages/redux-retro
-        run: |
-          npm version patch --no-git-tag-version
-          NEW_VERSION=$(node -p "require('./package.json').version")
-          echo "version=${NEW_VERSION}" >> $GITHUB_OUTPUT
-
-      - name: Bump react-redux-retro version (patch)
-        id: bump-react-redux-retro
-        working-directory: packages/react-redux-retro
-        run: |
-          npm version patch --no-git-tag-version
-          NEW_VERSION=$(node -p "require('./package.json').version")
-          echo "version=${NEW_VERSION}" >> $GITHUB_OUTPUT
-
-      - name: Commit version bumps
-        run: |
-          git add packages/redux-retro/package.json packages/react-redux-retro/package.json
-          git commit -m "chore: release redux-retro ${{ steps.bump-redux-retro.outputs.version }} and react-redux-retro ${{ steps.bump-react-redux-retro.outputs.version }} [skip ci]"
-          git push
+          git tag "redux-retro-${{ steps.bump-redux-retro.outputs.version }}"
+          git tag "react-redux-retro-${{ steps.bump-react-redux-retro.outputs.version }}"
+          git push origin "redux-retro-${{ steps.bump-redux-retro.outputs.version }}"
+          git push origin "react-redux-retro-${{ steps.bump-react-redux-retro.outputs.version }}"
 
       - name: Create redux-retro GitHub release
         uses: softprops/action-gh-release@v2
