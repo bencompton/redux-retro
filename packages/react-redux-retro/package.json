@@ -1,6 +1,6 @@
 {
   "name": "react-redux-retro",
-  "version": "1.0.4",
+  "version": "2.0.0",
   "description": "Connect Redux Retro to React",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
