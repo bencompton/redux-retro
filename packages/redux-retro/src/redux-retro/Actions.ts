@@ -45,10 +45,12 @@ export abstract class Actions<TAppState> {
     private reconfigureActions() {
         var prototype = this.constructor.prototype;
 
-        for (let i in prototype) {
+        for (const i of Object.getOwnPropertyNames(prototype)) {
+            if (i === 'constructor') continue;
+
             var member = prototype[i];
 
-            if (typeof member == 'function' && prototype.hasOwnProperty(i)) {
+            if (typeof member == 'function') {
                 let actionType = this.convertMethodNameToActionType(i);
 
                 member.actionType = actionType;
